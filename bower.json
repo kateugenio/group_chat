@@ -1,0 +1,20 @@
+{
+  "name": "group_chat",
+  "description": "",
+  "main": "server.js",
+  "authors": [
+    "Katherine Nguyen <khnguyen86@live.com>"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.1.1"
+  }
+}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Group Chat</title>
+  <script src="jquery/dist/jquery.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+	<h1>Conversation Board</h1>
+	<div id="conversations" style="width: 1000px; height: 600px; border: 1px solid black; overflow: scroll">
+		<p class="user_name" style="font-style: italic; color: red;"></p>
+	</div>
+	<form id="msg-form">
+		<input type="text" id="message" placeholder="Enter your message here..." style="width: 850px; height: 30px">
+		<input type="submit" value="send">
+	</form>
+	<div id="all"></div>
+
+	<script>
+		$(document).ready(function(){
+			var socket = io.connect();
+			var name = prompt("Enter your name: ");
+			var current_user;
+			socket.emit("got_a_new_user", {name: name});
+			socket.on("new_user", function(res){
+				console.log("new user is: " + res.new_user);
+				$('.user_name').html(res.new_user + " just joined the chat!");
+			});
+			socket.on("displayAll", function(res){
+				current_user = res.current_user;
+				var messages = res.allMessages;
+				for (var i=0; i<messages.length; i++){
+					$('#conversations').append('<p>'+messages[i].name+ ": " + messages[i].message+'</p>');
+				};
+			});
+			$('#msg-form').submit(function(){
+				var newMessage = $('#message').val()
+				socket.emit("new_message", {current_user: current_user, newMessage: newMessage});
+				$('#message').val(' ');
+				return false;
+			});
+			socket.on("display_new_message", function(res){
+				$('#conversations').append('<p>'+res.user + ": " +res.new_message+'</p>');
+			});
+		})
+	</script>
+</body>
+</html>
